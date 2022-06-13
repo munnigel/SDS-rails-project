@@ -4,9 +4,9 @@ class Movie < ActiveRecord::Base
   end
 
   def self.with_ratings(ratings_list)
-    if ratings_list = []
-      return Movie.all
+    if ratings_list.nil? || ratings_list.empty?
+      return self.all
     end
-    return Movie.where(Rating: ratings_list)
+    return self.where(rating: ratings_list)
   end
 end

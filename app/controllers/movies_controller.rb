@@ -8,19 +8,22 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
+    @ratings_to_show_hash = @all_ratings
+
     arr_of_ratings = params[:ratings]
-    if arr_of_ratings.nil?
+    if (!arr_of_ratings.nil?)
       @ratings_to_show_hash = []
-    else
-      @ratings_to_show_hash = [arr_of_ratings.keys]
+      params[:ratings].each_key {|key|
+      @ratings_to_show_hash.append(key)}
+      session[:ratings] = @ratings_to_show_hash
     end
 
+    #retrieve only selected movies based on ratings
     @movies = Movie.with_ratings(@ratings_to_show_hash)
     
     # using parsed data and if to set different instructions
     if (params[:sort] == "title")
-      @movies = Movie.order(params[:sort])
-      # how was i supposed to know this?????
+      @movies = Movie.with_ratings(@ratings_to_show_hash).order(params[:sort])
       @title_header = 'hilite bg-warning'
     elsif (params[:sort] == "release_date")
       @movies = Movie.order(params[:sort])
