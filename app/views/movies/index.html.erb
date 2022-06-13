@@ -22,7 +22,9 @@
         <%= link_to 'Movie Title', movies_path(ratings: Hash[@ratings_to_show_hash.map {|rating| [rating, '1']}], sort: 'title') %>
       </th>
       <th>Rating</th>
-      <th>Release Date</th>
+      <th class ="<%= @release_date_header %>" id = "release_date_header">
+        <%= link_to 'Release Date', movies_path(ratings: Hash[@ratings_to_show_hash.map {|rating| [rating, '1']}], sort: 'release_date') %>
+      </th>
       <th>More Info</th>
     </tr>
   </thead>

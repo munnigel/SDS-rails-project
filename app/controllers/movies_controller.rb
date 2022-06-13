@@ -26,7 +26,7 @@ class MoviesController < ApplicationController
       @movies = Movie.with_ratings(@ratings_to_show_hash).order(params[:sort])
       @title_header = 'hilite bg-warning'
     elsif (params[:sort] == "release_date")
-      @movies = Movie.order(params[:sort])
+      @movies = Movie.with_ratings(@ratings_to_show_hash).order(params[:sort])
       @release_date_header = 'hilite bg-warning'
     end
     
