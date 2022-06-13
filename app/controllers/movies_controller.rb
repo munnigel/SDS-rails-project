@@ -7,10 +7,13 @@ class MoviesController < ApplicationController
   end
 
   def index
+
+    #when no checkboxes are ticked
     @all_ratings = Movie.all_ratings
     @ratings_to_show_hash = @all_ratings
 
     arr_of_ratings = params[:ratings]
+    #when a checkbox is ticked
     if (!arr_of_ratings.nil?)
       @ratings_to_show_hash = []
       params[:ratings].each_key {|key|
@@ -18,20 +21,39 @@ class MoviesController < ApplicationController
       session[:ratings] = @ratings_to_show_hash
     end
 
+   
     #retrieve only selected movies based on ratings
     @movies = Movie.with_ratings(@ratings_to_show_hash)
     
     # using parsed data and if to set different instructions
-    if (params[:sort] == "title")
-      @movies = Movie.with_ratings(@ratings_to_show_hash).order(params[:sort])
-      @title_header = 'hilite bg-warning'
-    elsif (params[:sort] == "release_date")
-      @movies = Movie.with_ratings(@ratings_to_show_hash).order(params[:sort])
-      @release_date_header = 'hilite bg-warning'
-    end
+    #these params[] are only for temporary data, once they are navigated out, the sorted list is gone
     
+    if (!params[:sort].blank?)
+      if (params[:sort] == "title")
+        @movies = Movie.with_ratings(@ratings_to_show_hash).order(params[:sort])
+        @title_header = 'hilite bg-warning'
+      elsif (params[:sort] == "release_date")
+        @movies = Movie.with_ratings(@ratings_to_show_hash).order(params[:sort])
+        @release_date_header = 'hilite bg-warning'
+      end
+      session[:sort] = params[:sort] 
+    end
+
+
+    #these session[] are to remember the sorted list once you get out of the page and want to get back in again
+    if (!session[:sort].blank?)
+      @ratings_to_show_hash = session[:ratings] 
+      if (session[:sort] == "title")
+        @movies = Movie.with_ratings(@ratings_to_show_hash).order(session[:sort])
+        @title_header = 'hilite bg-warning'
+      elsif (session[:sort] == "release_date")
+        @movies = Movie.with_ratings(@ratings_to_show_hash).order(session[:sort])
+        @release_date_header = 'hilite bg-warning'
+      end
+    end
 
   end
+
 
   def new
     # default: render 'new' template
