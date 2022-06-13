@@ -6,12 +6,28 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
-  def initialise
-    @movies = Movie.all_ratings
-  end
-
   def index
-    @movies = Movie.all
+    @all_ratings = Movie.all_ratings
+    arr_of_ratings = params[:ratings]
+    if arr_of_ratings.nil?
+      @ratings_to_show_hash = []
+    else
+      @ratings_to_show_hash = [arr_of_ratings.keys]
+    end
+
+    @movies = Movie.with_ratings(@ratings_to_show_hash)
+    
+    # using parsed data and if to set different instructions
+    if (params[:sort] == "title")
+      @movies = Movie.order(params[:sort])
+      # how was i supposed to know this?????
+      @title_header = 'hilite bg-warning'
+    elsif (params[:sort] == "release_date")
+      @movies = Movie.order(params[:sort])
+      @release_date_header = 'hilite bg-warning'
+    end
+    
+
   end
 
   def new
